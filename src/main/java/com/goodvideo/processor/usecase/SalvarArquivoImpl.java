@@ -3,6 +3,7 @@ package com.goodvideo.processor.usecase;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.PutObjectResult;
 import com.goodvideo.processor.domains.Processamento;
 import com.goodvideo.processor.domains.exceptions.ProcessamentoException;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class SalvarArquivoImpl implements SalvarArquivo {
 
       String filePathS3 = String.format("%s/%s/%s", processamento.getIdUsuario(), processamento.getIdVideo(), file.getName());
 
-      amazonS3.putObject(new PutObjectRequest(bucketName, filePathS3, new FileInputStream(file), data));
+      PutObjectResult putObjectResult = amazonS3.putObject(new PutObjectRequest(bucketName, filePathS3, new FileInputStream(file), data));
 
       return filePathS3;
 

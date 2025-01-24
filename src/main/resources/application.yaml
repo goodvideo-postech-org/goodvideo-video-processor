@@ -2,6 +2,8 @@ server:
   port: 8080
 
 aws:
+  access: ${ACCESS_KEY:dummy}
+  secret: ${SECRET_ACCESS_KEY:dummy}
   bucket: ${BUCKET_NAME:goodvideo-videos-upload}
 
 springdoc:

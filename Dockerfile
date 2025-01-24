@@ -8,7 +8,7 @@ COPY pom.xml /app
 
 WORKDIR /app
 
-RUN mvn package -DskipTests=true
+RUN mvn clean package -DskipTests=true
 
 FROM linuxserver/ffmpeg
 
