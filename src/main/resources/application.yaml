@@ -29,4 +29,4 @@ process:
   ffmpeg-path: ${FFMPEG_PATH:/usr/local/bin/ffmpeg}
   download-path: ${DOWNLOAD_PATH:/tmp/dir/%s/download/}
   zip-path: ${ZIP_PATH:/tmp/dir/zip/}
-  frames-path: ${ZIP_PATH:/tmp/dir/frames/}
+  frames-path: ${FRAMES_PATH:/tmp/dir/frames/}
