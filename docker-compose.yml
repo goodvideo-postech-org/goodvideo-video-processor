@@ -6,38 +6,15 @@ services:
     hostname: goodvideo
     environment:
       - SERVER_PORT=8080
-      - DATABASE_URL=jdbc:postgresql://db-postgres:5432/upload
-      - DATABASE_USERNAME=postgres
-      - DATABASE_PASSWORD=postgres   
-      - DEFAULT_PATH=/usr/upload/videos 
       - KAFKA_BOOTSTRAP_SERVERS=kafka1:9092
     ports:
       - "8080:8080"    
     depends_on:
-      - db-postgres
-      - db-redis
-      - zookeeper1
       - kafka1
     volumes:
       - /home/bridi/Documents/fiap/videos:/usr/upload/videos
     networks:
       - app-network
-  db-postgres:
-    image: postgres:latest
-    hostname: db
-    environment:
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=upload
-    ports:
-      - "5432:5432"
-    networks:
-      - app-network      
-  db-redis:
-    image: redis:latest
-    hostname: redis
-    ports:
-      - "6379:6379"
   zookeeper1:
       image: confluentinc/cp-zookeeper:7.5.1
       container_name: zookeeper1
