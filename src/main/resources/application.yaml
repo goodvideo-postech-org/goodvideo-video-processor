@@ -15,7 +15,7 @@ spring:
   application:
     name: Processor Service
   kafka:
-    bootstrap-servers: host.docker.internal:9092
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka-service:9092}
     consumer:
       group-id: my-consumer-group
       auto-offset-reset: earliest
@@ -28,5 +28,5 @@ spring:
 process:
   ffmpeg-path: ${FFMPEG_PATH:/usr/local/bin/ffmpeg}
   download-path: ${DOWNLOAD_PATH:/tmp/dir/%s/download/}
-  zip-path: ${ZIP_PATH:/tmp/dir/dir/zip/}
+  zip-path: ${ZIP_PATH:/tmp/dir/zip/}
   frames-path: ${ZIP_PATH:/tmp/dir/frames/}
