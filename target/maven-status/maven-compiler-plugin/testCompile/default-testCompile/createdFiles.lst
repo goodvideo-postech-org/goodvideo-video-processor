@@ -1,0 +1,7 @@
+com\goodvideo\processor\usecase\SalvarArquivoImplTest.class
+com\goodvideo\processor\gateways\messaging\kafka\ProcessamentoMensageriaListenerTest.class
+com\goodvideo\processor\usecase\ZiparArquivoImplTest.class
+com\goodvideo\processor\usecase\FinalizarProcessamentoImplTest.class
+com\goodvideo\processor\usecase\ProcessarVideoImplTest.class
+com\goodvideo\processor\usecase\BaixarArquivoImplTest.class
+com\goodvideo\processor\usecase\DeletarArquivoImplTest.class
