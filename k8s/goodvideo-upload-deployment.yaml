@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goodvideo-process
+  labels:
+    app: goodvideo-process
+spec:
+  selector:
+    matchLabels:
+      app: goodvideo-process
+  template:
+    metadata:
+      labels:
+        app: goodvideo-process
+    spec:
+      containers:
+      - name: goodvideo-process
+        image: drmartini7/goodvideo-process:latest
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: "260m"
+          limits:
+            cpu: "500m" 
+        env:
+        - name: ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: ACCESS_KEY
+        - name: SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: SECRET_ACCESS_KEY
+        - name: BUCKET_NAME
+          value: goodvideo-videos-upload
+        - name: KAFKA_BOOTSTRAP_SERVERS
+          value: svc-goodvideo-kafka-loadbalancer:9092  
