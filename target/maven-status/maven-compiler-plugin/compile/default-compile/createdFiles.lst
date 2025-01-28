@@ -8,11 +8,11 @@ com\goodvideo\processor\gateways\messaging\kafka\resources\FinalizarProcessament
 com\goodvideo\processor\gateways\messaging\kafka\resources\FinalizarProcessamentoMensagem.class
 com\goodvideo\processor\usecase\DeletarArquivo.class
 com\goodvideo\processor\config\security\SecurityConfiguration.class
-com\goodvideo\processor\gateways\messaging\kafka\ProcessamentoMensageriaGatewayImpl.class
 com\goodvideo\processor\gateways\messaging\kafka\resources\ProcessamentoMensagem.class
 com\goodvideo\processor\usecase\FinalizarProcessamento.class
 com\goodvideo\processor\usecase\ZiparArquivo.class
 com\goodvideo\processor\ProcessApplication.class
+com\goodvideo\processor\gateways\messaging\kafka\ProcessamentoMensageriaListener.class
 com\goodvideo\processor\gateways\FinalizarProcessamentoMensageriaGateway.class
 com\goodvideo\processor\usecase\FinalizarProcessamentoImpl.class
 com\goodvideo\processor\domains\Processamento$ProcessamentoBuilder.class
@@ -21,11 +21,7 @@ com\goodvideo\processor\usecase\SalvarArquivoImpl.class
 com\goodvideo\processor\gateways\messaging\kafka\FinalizarProcessamentoMensageriaGatewayImpl.class
 com\goodvideo\processor\config\cloud\AWSClientConfig.class
 com\goodvideo\processor\gateways\messaging\kafka\Topic.class
-com\goodvideo\processor\gateways\ProcessamentoMensageriaGateway.class
-com\goodvideo\processor\gateways\api\CustomExceptionHandler.class
 com\goodvideo\processor\usecase\ZiparArquivoImpl.class
-com\goodvideo\processor\config\kafka\KafkaConsumerConfig.class
 com\goodvideo\processor\usecase\ProcessarVideoImpl.class
 com\goodvideo\processor\usecase\BaixarArquivo.class
-com\goodvideo\processor\gateways\api\ProcessarVideoController.class
 com\goodvideo\processor\usecase\SalvarArquivo.class

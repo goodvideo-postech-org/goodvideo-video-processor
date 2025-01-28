@@ -57,7 +57,6 @@ public class ProcessarVideoImpl implements ProcessarVideo {
 
       ffmpeg.run(builder);
 
-
       System.out.println("FFMPEG DONE");
 
       String zipPath = ziparArquivo.executar(outputDirectory, processamento);
