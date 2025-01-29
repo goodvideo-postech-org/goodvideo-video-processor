@@ -50,7 +50,7 @@ public class BaixarArquivoImpl implements BaixarArquivo {
       System.out.println("s3Object" + s3Object);
 
       try (InputStream inputStream = s3Object.getObjectContent();
-           FileOutputStream outputStream = new FileOutputStream(completeDownloadPath )) {
+           FileOutputStream outputStream = new FileOutputStream(completeDownloadPath)) {
 
         byte[] buffer = new byte[1024];
         int bytesRead;
