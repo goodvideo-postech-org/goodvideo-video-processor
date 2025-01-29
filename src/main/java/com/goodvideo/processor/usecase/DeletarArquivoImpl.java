@@ -18,6 +18,7 @@ public class DeletarArquivoImpl implements DeletarArquivo {
   @Override
   public void executar(final Processamento processamento) {
     amazonS3.deleteObject(bucketName, processamento.getDiretorio());
+    
   }
 
 }
