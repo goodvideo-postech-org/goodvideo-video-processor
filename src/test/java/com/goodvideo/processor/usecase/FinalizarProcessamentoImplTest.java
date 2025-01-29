@@ -5,9 +5,12 @@ import com.goodvideo.processor.gateways.FinalizarProcessamentoMensageriaGateway;
 import com.goodvideo.processor.gateways.messaging.kafka.resources.FinalizarProcessamentoMensagem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class FinalizarProcessamentoImplTest {
 
     private FinalizarProcessamentoMensageriaGateway mockGateway;
