@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: goodvideo-process
-        image: drmartini7/goodvideo-process:latest
+        image: bridi/goodvideo-process:latest
         ports:
         - containerPort: 80
         resources:
