@@ -3,14 +3,20 @@ package com.goodvideo.processor.usecase;
 import com.goodvideo.processor.domains.Processamento;
 import com.goodvideo.processor.domains.Status;
 import com.goodvideo.processor.domains.exceptions.ProcessamentoException;
+import com.goodvideo.processor.factories.FileOutputStreamFactory;
+import com.goodvideo.processor.factories.ZipOutputStreamFactory;
 import com.goodvideo.processor.gateways.messaging.kafka.resources.FinalizarProcessamentoMensagem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.zip.ZipOutputStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -20,15 +26,27 @@ class ZiparArquivoImplTest {
   private ZiparArquivoImpl ziparArquivo;
   private FinalizarProcessamento finalizarProcessamento;
 
+  @Mock
+  private FileOutputStreamFactory fileOutputStreamFactory;
+
+  @Mock
+  private ZipOutputStreamFactory zipOutputStreamFactory;
+
+  @Mock
+  private ZipOutputStream zipOutputStream;
+
+  @Mock
+  private FileOutputStream fileOutputStream;
+
   private static final String MOCK_ZIP_PATH = "/mock/zip/path/";
 
   @BeforeEach
-  void setUp() throws NoSuchFieldException, IllegalAccessException {
+  void setUp() throws NoSuchFieldException, IllegalAccessException, FileNotFoundException {
     // Mock dependencies
     finalizarProcessamento = mock(FinalizarProcessamento.class);
 
     // Instantiate the class with mocks
-    ziparArquivo = new ZiparArquivoImpl(finalizarProcessamento);
+    ziparArquivo = new ZiparArquivoImpl(finalizarProcessamento, fileOutputStreamFactory, zipOutputStreamFactory);
 
     // Inject the mock zip path
     Field zipPathField = ZiparArquivoImpl.class.getDeclaredField("zipPath");
@@ -43,6 +61,9 @@ class ZiparArquivoImplTest {
     processamento.setIdUsuario("123");
     processamento.setIdVideo("video123");
 
+    when(zipOutputStreamFactory.createZipOutputStream(any())).thenReturn(zipOutputStream);
+    when(fileOutputStreamFactory.createFileOutputStream(any())).thenReturn(fileOutputStream);
+
     // Create a temporary directory and file to simulate input
     Path tempDir = Files.createTempDirectory("testDir");
     Path tempFile = Files.createTempFile(tempDir, "testFile", ".txt");
@@ -50,7 +71,6 @@ class ZiparArquivoImplTest {
 
     String expectedOutputPath = MOCK_ZIP_PATH + "123/frames.zip";
 
-    // Act
     String result = ziparArquivo.executar(tempDir.toString(), processamento);
 
     // Assert
