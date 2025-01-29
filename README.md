@@ -7,7 +7,7 @@
 ![Bugs](https://sonarcloud.io/api/project_badges/measure?project=goodvideo-postech-org_goodvideo-video-processor&metric=bugs)
 
 
-Esse projeto é responsável por processar vídeos enviados para o GoodVideo, pegando frames do vídeo a cada 10 segundos e salvando no Amazon S3 em formato zip.
+Esse projeto é responsável por processar vídeos enviados para o GoodVideo, pegando um frame a cada 10 segundos de video e salvando no Amazon S3 em formato zip.
 
 ## Features
 

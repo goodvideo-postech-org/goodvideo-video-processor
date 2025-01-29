@@ -1,6 +1,6 @@
 services:
   app:
-    image: drmartini7/goodvideo-process:latest
+    image: bridi/goodvideo-process:latest
     hostname: goodvideo
     environment:
       - SERVER_PORT=8080
