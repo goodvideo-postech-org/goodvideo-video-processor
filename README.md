@@ -6,6 +6,7 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=goodvideo-postech-org_goodvideo-video-processor&metric=alert_status)](https://sonarcloud.io/dashboard?id=goodvideo-postech-org_goodvideo-video-processor)
 ![Bugs](https://sonarcloud.io/api/project_badges/measure?project=goodvideo-postech-org_goodvideo-video-processor&metric=bugs)
 
+#### A documentação completa de todos os repositórios e como se interagem pode ser encontrada por aqui: [Goodvideo](https://github.com/goodvideo-postech-org/goodvideo-doc)
 
 Esse projeto é responsável por processar vídeos enviados para o GoodVideo, pegando um frame a cada 10 segundos de video e salvando no Amazon S3 em formato zip.
 
