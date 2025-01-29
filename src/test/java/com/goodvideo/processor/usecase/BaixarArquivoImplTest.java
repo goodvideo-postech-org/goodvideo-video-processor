@@ -7,11 +7,14 @@ import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.goodvideo.processor.domains.Processamento;
 import com.goodvideo.processor.domains.Status;
 import com.goodvideo.processor.domains.exceptions.ProcessamentoException;
+import com.goodvideo.processor.factories.FileOutputStreamFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.io.FileOutputStream;
 import java.lang.reflect.Field;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,11 +36,17 @@ public class BaixarArquivoImplTest {
     @Mock
     private S3ObjectInputStream s3ObjectInputStream;
 
+    @Mock
+    private FileOutputStreamFactory fileOutputStreamFactory;
+
+    @Mock
+    private FileOutputStream fileOutputStream;
+
     @BeforeEach
     void setUp() throws NoSuchFieldException, IllegalAccessException {
 
         // Instantiate the class with mocks
-        baixarArquivo = new BaixarArquivoImpl(amazonS3);
+        baixarArquivo = new BaixarArquivoImpl(amazonS3, fileOutputStreamFactory);
 
         // Inject the mock zip path
         Field bucketNameField = BaixarArquivoImpl.class.getDeclaredField("bucketName");
@@ -65,6 +74,8 @@ public class BaixarArquivoImplTest {
         when(amazonS3.getObject(any(GetObjectRequest.class))).thenReturn(s3Object);
         when(s3Object.getObjectContent()).thenReturn(s3ObjectInputStream);
         when(s3ObjectInputStream.read(any())).thenReturn(-1);
+
+        when(fileOutputStreamFactory.createFileOutputStream(any())).thenReturn(fileOutputStream);
 
         String result = baixarArquivo.executar(processamento);
 

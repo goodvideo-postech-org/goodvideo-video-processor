@@ -7,6 +7,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.goodvideo.processor.domains.Processamento;
 import com.goodvideo.processor.domains.exceptions.ProcessamentoException;
+import com.goodvideo.processor.factories.FileOutputStreamFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -21,6 +22,7 @@ import java.io.InputStream;
 public class BaixarArquivoImpl implements BaixarArquivo {
 
   private final AmazonS3 amazonS3;
+  private final FileOutputStreamFactory fileOutputStreamFactory;
 
   @Value("${aws.bucket}")
   private String bucketName;
@@ -50,7 +52,7 @@ public class BaixarArquivoImpl implements BaixarArquivo {
       System.out.println("s3Object" + s3Object);
 
       try (InputStream inputStream = s3Object.getObjectContent();
-           FileOutputStream outputStream = new FileOutputStream(completeDownloadPath)) {
+           FileOutputStream outputStream = fileOutputStreamFactory.createFileOutputStream(completeDownloadPath)) {
 
         byte[] buffer = new byte[1024];
         int bytesRead;
