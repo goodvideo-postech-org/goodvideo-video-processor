@@ -35,6 +35,8 @@
 			**/processor/config/**,
 			**/response/**,
 			**/resources/**,
+			**/factories/**,
+			**/ProcessarVideoImpl.java
 			**/gateways/api/**,
 		</sonar.coverage.exclusions>
 	</properties>

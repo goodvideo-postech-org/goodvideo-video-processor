@@ -1,7 +1,6 @@
 package com.goodvideo.processor.usecase;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,6 +11,8 @@ import java.util.zip.ZipOutputStream;
 import com.goodvideo.processor.domains.Processamento;
 import com.goodvideo.processor.domains.Status;
 import com.goodvideo.processor.domains.exceptions.ProcessamentoException;
+import com.goodvideo.processor.factories.FileOutputStreamFactory;
+import com.goodvideo.processor.factories.ZipOutputStreamFactory;
 import com.goodvideo.processor.gateways.messaging.kafka.resources.FinalizarProcessamentoMensagem;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -22,10 +23,12 @@ import lombok.RequiredArgsConstructor;
 public class ZiparArquivoImpl implements ZiparArquivo {
 
   private final FinalizarProcessamento finalizarProcessamento;
+  private final FileOutputStreamFactory fileOutputStreamFactory;
+  private final ZipOutputStreamFactory zipOutputStreamFactory;
 
   @Value("${process.zip-path}")
   private String zipPath;
-  
+
   @Override
   public String executar(final String directoryPath, Processamento processamento) throws ProcessamentoException {
     Path sourceFolder = Paths.get(directoryPath);
@@ -35,7 +38,7 @@ public class ZiparArquivoImpl implements ZiparArquivo {
 
     new File(zipUserPath).mkdirs();
 
-    try (ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(outputPath))) {
+    try (ZipOutputStream zipOutputStream = zipOutputStreamFactory.createZipOutputStream(fileOutputStreamFactory.createFileOutputStream(outputPath))) {
       Files.walk(sourceFolder)
         .filter(path -> !Files.isDirectory(path))
         .forEach(path -> {

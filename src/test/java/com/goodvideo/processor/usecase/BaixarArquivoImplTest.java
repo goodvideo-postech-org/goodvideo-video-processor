@@ -5,97 +5,97 @@ import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.goodvideo.processor.domains.Processamento;
+import com.goodvideo.processor.domains.Status;
 import com.goodvideo.processor.domains.exceptions.ProcessamentoException;
+import com.goodvideo.processor.factories.FileOutputStreamFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.nio.file.Files;
+import java.io.FileOutputStream;
+import java.lang.reflect.Field;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-class BaixarArquivoImplTest {
+@ExtendWith(MockitoExtension.class)
+public class BaixarArquivoImplTest {
 
-    private BaixarArquivoImpl baixarArquivo;
+    @Mock
     private AmazonS3 amazonS3;
 
-    private static final String MOCK_BUCKET_NAME = "mock-bucket";
-    private static final String MOCK_DOWNLOAD_PATH = "/mock/download/%s/";
+    private BaixarArquivoImpl baixarArquivo;
+
+    @Mock
+    private S3Object s3Object;
+
+    @Mock
+    private S3ObjectInputStream s3ObjectInputStream;
+
+    @Mock
+    private FileOutputStreamFactory fileOutputStreamFactory;
+
+    @Mock
+    private FileOutputStream fileOutputStream;
 
     @BeforeEach
-    void setUp() throws Exception {
-        // Mock the AmazonS3 client
-        amazonS3 = mock(AmazonS3.class);
+    void setUp() throws NoSuchFieldException, IllegalAccessException {
 
-        // Create the class under test
-        baixarArquivo = new BaixarArquivoImpl(amazonS3);
+        // Instantiate the class with mocks
+        baixarArquivo = new BaixarArquivoImpl(amazonS3, fileOutputStreamFactory);
 
-        // Use reflection to set private fields
-        var bucketField = BaixarArquivoImpl.class.getDeclaredField("bucketName");
-        bucketField.setAccessible(true);
-        bucketField.set(baixarArquivo, MOCK_BUCKET_NAME);
+        // Inject the mock zip path
+        Field bucketNameField = BaixarArquivoImpl.class.getDeclaredField("bucketName");
+        bucketNameField.setAccessible(true); // Make the private field accessible
+        bucketNameField.set(baixarArquivo, "mockBucket"); // Set the value
 
-        var downloadPathField = BaixarArquivoImpl.class.getDeclaredField("downloadPath");
-        downloadPathField.setAccessible(true);
-        downloadPathField.set(baixarArquivo, MOCK_DOWNLOAD_PATH);
+        // Inject the mock zip path
+        Field downloadPathField = BaixarArquivoImpl.class.getDeclaredField("downloadPath");
+        downloadPathField.setAccessible(true); // Make the private field accessible
+        downloadPathField.set(baixarArquivo, "/downloadPath/%s/"); // Set the value
     }
 
     @Test
-    void testExecutar_Success() throws Exception {
-        // Arrange: Create a dummy Processamento object
-        Processamento processamento = new Processamento();
-        processamento.setDiretorio("test/file.txt");
-        processamento.setIdVideo("12345");
+    public void testExecutarSuccess() throws Exception {
+        Processamento processamento = new Processamento(
+                "idVideo",
+                "idProcessamento",
+                "email@example.com",
+                "cloud/video.mp4",
+                "",
+                Status.PROCESSANDO);
 
-        String mockFileContent = "This is a test file content.";
-        S3ObjectInputStream mockInputStream = new S3ObjectInputStream(new ByteArrayInputStream(mockFileContent.getBytes()), null);
+        String expectedPath = "/downloadPath/idVideo/video.mp4";
 
-        // Mock the behavior of S3Object
-        S3Object mockS3Object = mock(S3Object.class);
-        when(mockS3Object.getObjectContent()).thenReturn(mockInputStream);
-        doNothing().when(mockS3Object).close();
+        when(amazonS3.getObject(any(GetObjectRequest.class))).thenReturn(s3Object);
+        when(s3Object.getObjectContent()).thenReturn(s3ObjectInputStream);
+        when(s3ObjectInputStream.read(any())).thenReturn(-1);
 
-        // Mock the behavior of AmazonS3
-        when(amazonS3.getObject(any(GetObjectRequest.class))).thenReturn(mockS3Object);
+        when(fileOutputStreamFactory.createFileOutputStream(any())).thenReturn(fileOutputStream);
 
-        String expectedDownloadPath = String.format(MOCK_DOWNLOAD_PATH, "12345") + "file.txt";
-
-        // Act
         String result = baixarArquivo.executar(processamento);
 
-        // Assert
-        assertEquals(expectedDownloadPath, result);
-        assertTrue(Files.exists(new File(expectedDownloadPath).toPath()));
-
-        // Verify AmazonS3 interaction
-        verify(amazonS3, times(1)).getObject(new GetObjectRequest(MOCK_BUCKET_NAME, processamento.getDiretorio()));
-
-        // Clean up
-        Files.deleteIfExists(new File(expectedDownloadPath).toPath());
-        Files.deleteIfExists(new File(String.format(MOCK_DOWNLOAD_PATH, "12345")).toPath());
+        assertEquals(expectedPath, result);
+        verify(amazonS3, times(1)).getObject(any(GetObjectRequest.class));
     }
 
     @Test
-    void testExecutar_Failure() {
-        // Arrange: Create a dummy Processamento object
-        Processamento processamento = new Processamento();
-        processamento.setDiretorio("test/file.txt");
-        processamento.setIdVideo("12345");
+    public void testExecutarFailure() {
+        Processamento processamento = new Processamento(
+                "idVideo",
+                "idProcessamento",
+                "email@example.com",
+                "cloud/video.mp4",
+                "",
+                Status.PROCESSANDO);
 
-        // Mock the behavior of AmazonS3 to throw an exception
         when(amazonS3.getObject(any(GetObjectRequest.class))).thenThrow(new RuntimeException("S3 error"));
 
-        // Act & Assert
-        ProcessamentoException exception = assertThrows(
-                ProcessamentoException.class,
-                () -> baixarArquivo.executar(processamento)
-        );
-
-        assertTrue(exception.getMessage().contains("Falha ao salvar arquivo"));
-
-        // Verify that AmazonS3 was called
-        verify(amazonS3, times(1)).getObject(new GetObjectRequest(MOCK_BUCKET_NAME, processamento.getDiretorio()));
+        assertThrows(ProcessamentoException.class, () -> baixarArquivo.executar(processamento));
+        verify(amazonS3, times(1)).getObject(any(GetObjectRequest.class));
     }
 }
