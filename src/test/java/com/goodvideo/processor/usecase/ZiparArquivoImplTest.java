@@ -8,7 +8,9 @@ import com.goodvideo.processor.factories.ZipOutputStreamFactory;
 import com.goodvideo.processor.gateways.messaging.kafka.resources.FinalizarProcessamentoMensagem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -21,7 +23,8 @@ import java.util.zip.ZipOutputStream;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class ZiparArquivoImplTest {
+@ExtendWith(MockitoExtension.class)
+public class ZiparArquivoImplTest {
 
   private ZiparArquivoImpl ziparArquivo;
   private FinalizarProcessamento finalizarProcessamento;
